@@ -2,6 +2,9 @@ package hexlet.code.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,8 +30,12 @@ public class User implements BaseEntity {
     private String lastName;
 
     @Email
+    @NotBlank
+    @Column(unique = true)
     private String email;
 
+    @NotNull
+    @Size(min = 3)
     private String password;
 
     @CreatedDate

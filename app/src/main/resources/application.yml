@@ -9,7 +9,7 @@ spring:
     ansi:
       enabled: always
   profiles:
-    default: "production"
+    active: "production"
   datasource:
     url: "jdbc:h2:mem:project"
     driver-class-name: "org.h2.Driver"
@@ -20,3 +20,7 @@ logging:
     org:
       springframework:
         security: DEBUG
+
+admin:
+  email: "hexlet@example.com"
+  password: "qwerty"
