@@ -52,12 +52,13 @@ dependencies {
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.0.Beta1")
 	implementation("io.github.wimdeblauwe:error-handling-spring-boot-starter:4.2.0")
 
+	runtimeOnly("com.h2database:h2:2.2.224")
+	implementation("org.postgresql:postgresql:42.7.3")
+
 	implementation("org.instancio:instancio-junit:3.6.0")
 	implementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
 	implementation("net.datafaker:datafaker:2.0.2")
 
-	runtimeOnly("com.h2database:h2:2.2.224")
-	implementation("org.postgresql:postgresql:42.7.3")
 	//testImplementation("org.springframework.security:spring-security-test")
 	testImplementation(platform("org.junit:junit-bom:5.10.1"))
 	testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
