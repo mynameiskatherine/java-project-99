@@ -57,6 +57,7 @@ dependencies {
 	implementation("net.datafaker:datafaker:2.0.2")
 
 	runtimeOnly("com.h2database:h2:2.2.224")
+	implementation("org.postgresql:postgresql:42.7.3")
 	//testImplementation("org.springframework.security:spring-security-test")
 	testImplementation(platform("org.junit:junit-bom:5.10.1"))
 	testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
