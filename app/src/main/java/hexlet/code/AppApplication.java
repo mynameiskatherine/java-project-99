@@ -14,8 +14,4 @@ public class AppApplication {
 		SpringApplication.run(AppApplication.class, args);
 	}
 
-	@Bean
-	public Faker getFaker() {
-		return new Faker(new Locale("en", "US"));
-	}
 }

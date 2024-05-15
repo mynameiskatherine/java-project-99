@@ -1,4 +1,4 @@
-package hexlet.code.utils;
+package hexlet.code.util;
 
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
@@ -23,6 +23,8 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         User admin = new User();
         admin.setEmail(adminEmail);
         admin.setPassword(adminPassword);
-        userRepository.save(admin);
+        if (!userRepository.existsByEmail(adminEmail)) {
+            userRepository.save(admin);
+        }
     }
 }

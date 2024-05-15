@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.utils.ModelGenerator;
+import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,12 +15,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.HashMap;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -53,7 +55,7 @@ public class UsersControllerTest {
     public void testIndex() throws Exception {
         userRepository.save(testUser);
 
-        MvcResult result = mockMvc.perform(get("/api/users"))
+        MvcResult result = mockMvc.perform(get("/api/users").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -65,7 +67,7 @@ public class UsersControllerTest {
     public void testShow() throws Exception {
         userRepository.save(testUser);
 
-        MvcResult result = mockMvc.perform(get("/api/users/{id}", testUser.getId()))
+        MvcResult result = mockMvc.perform(get("/api/users/{id}", testUser.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -114,7 +116,7 @@ public class UsersControllerTest {
         testUser.setEmail("newemail@new.com");
         testUser.setPassword("newpassword");
 
-        MockHttpServletRequestBuilder request = put("/api/users/{id}", testUser.getId())
+        MockHttpServletRequestBuilder request = put("/api/users/{id}", testUser.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testUser));
 
@@ -136,7 +138,7 @@ public class UsersControllerTest {
         HashMap<String, String> userUpdate = new HashMap<>();
         userUpdate.put("firstName", "newname");
 
-        MockHttpServletRequestBuilder request = put("/api/users/{id}", testUser.getId())
+        MockHttpServletRequestBuilder request = put("/api/users/{id}", testUser.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userUpdate));
 
@@ -149,12 +151,28 @@ public class UsersControllerTest {
         assertThat(user.getFirstName()).isEqualTo(userUpdate.get("firstName"));
     }
 
-    public void testDestroy() throws Exception {
+    @Test
+    public void testDelete() throws Exception {
         userRepository.save(testUser);
 
-        mockMvc.perform(delete("/books/{id}", testUser.getId()))
-                .andExpect(status().isOk());
+        mockMvc.perform(delete("/api/users/{id}", testUser.getId()).with(jwt()))
+                .andExpect(status().isNoContent());
 
         assertThat(userRepository.existsById(testUser.getId())).isEqualTo(false);
+    }
+
+    @Test
+    public void testIndexWithoutAuth() throws Exception {
+        userRepository.save(testUser);
+        ResultActions result = mockMvc.perform(get("/api/users"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testShowWithoutAuth() throws Exception {
+        userRepository.save(testUser);
+        MockHttpServletRequestBuilder request = get("/api/users/{id}", testUser.getId());
+        ResultActions result = mockMvc.perform(request)
+                .andExpect(status().isUnauthorized());
     }
 }

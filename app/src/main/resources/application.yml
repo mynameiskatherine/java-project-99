@@ -21,3 +21,7 @@ logging:
 admin:
   email: "hexlet@example.com"
   password: "qwerty"
+
+rsa:
+  private-key: classpath:certs/private.pem
+  public-key: classpath:certs/public.pem

@@ -1,6 +1,6 @@
-package hexlet.code.controller;
+package hexlet.code.controller.api;
 
-import hexlet.code.UserService;
+import hexlet.code.service.UserService;
 import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
