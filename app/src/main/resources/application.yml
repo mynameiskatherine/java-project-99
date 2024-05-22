@@ -9,7 +9,7 @@ spring:
     ansi:
       enabled: always
   profiles:
-    default: "production"
+    default: production
 
 logging:
   level:
@@ -18,9 +18,18 @@ logging:
       springframework:
         security: DEBUG
 
-admin:
-  email: "hexlet@example.com"
-  password: "qwerty"
+
+user:
+  email: hexlet@example.com
+  password: qwerty
+
+# format: low case, no spaces - use _ instead
+task-statuses: >
+    draft,
+    to_review,
+    to_be_fixed,
+    to_publish,
+    published
 
 rsa:
   private-key: classpath:certs/private.pem

@@ -11,7 +11,7 @@ run-dist:
 	./build/install/app/bin/app
 
 run:
-	./gradlew run
+	./gradlew bootRun
 
 test:
 	./gradlew test

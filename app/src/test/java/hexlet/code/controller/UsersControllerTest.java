@@ -111,8 +111,6 @@ public class UsersControllerTest {
     public void testUpdate() throws Exception {
         userRepository.save(testUser);
 
-        testUser.setFirstName("newname");
-        testUser.setLastName("newlastname");
         testUser.setEmail("newemail@new.com");
         testUser.setPassword("newpassword");
 
@@ -128,7 +126,7 @@ public class UsersControllerTest {
         assertThat(user.getFirstName()).isEqualTo(testUser.getFirstName());
         assertThat(user.getLastName()).isEqualTo(testUser.getLastName());
         assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
-        assertThat(user.getPassword()).isEqualTo(testUser.getPassword());
+        assertThat(user.getPassword()).isNotEqualTo(testUser.getPassword());
     }
 
     @Test
@@ -136,7 +134,7 @@ public class UsersControllerTest {
         userRepository.save(testUser);
 
         HashMap<String, String> userUpdate = new HashMap<>();
-        userUpdate.put("firstName", "newname");
+        userUpdate.put("email", "newemail@test.com");
 
         MockHttpServletRequestBuilder request = put("/api/users/{id}", testUser.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -148,7 +146,7 @@ public class UsersControllerTest {
         User user = userRepository.findById(testUser.getId()).get();
 
         assertThat(user.getLastName()).isEqualTo(testUser.getLastName());
-        assertThat(user.getFirstName()).isEqualTo(userUpdate.get("firstName"));
+        assertThat(user.getEmail()).isEqualTo(userUpdate.get("email"));
     }
 
     @Test

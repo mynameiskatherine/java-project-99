@@ -2,7 +2,6 @@ package hexlet.code.service;
 
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.util.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,15 +18,9 @@ public class CustomUserDetailsService implements UserDetailsManager {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserUtils userUtils;
-
     @Override
     public void createUser(UserDetails userDetails) {
-        User user = new User();
-        user.setEmail(userDetails.getUsername());
-        user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-        userRepository.save(user);
+        throw new UnsupportedOperationException("Unimplemented method");
     }
 
     @Override
@@ -42,23 +35,18 @@ public class CustomUserDetailsService implements UserDetailsManager {
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
-        User user = userUtils.getCurrentUser();
-        String oldPasswordHash = passwordEncoder.encode(oldPassword);
-        if (user.getPassword().equals(oldPasswordHash)) {
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
-        }
+        throw new UnsupportedOperationException("Unimplemented method");
     }
 
     @Override
     public boolean userExists(String username) {
-        return userRepository.existsByEmail(username);
+        throw new UnsupportedOperationException("Unimplemented method");
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No such username found"));
+                .orElseThrow(() -> new UsernameNotFoundException("No username %s found".formatted(username)));
         return user;
     }
 }
