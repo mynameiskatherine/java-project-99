@@ -51,7 +51,9 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id %d not found".formatted(id)));
         userMapper.update(userUpdateDTO, user);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (userUpdateDTO.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userRepository.save(user);
         return userMapper.map(user);
     }
@@ -59,6 +61,10 @@ public class UserService {
     public void delete(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id %d not found".formatted(id)));
-        userRepository.deleteById(id);
+        if (user.getTasks().isEmpty()) {
+            userRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("User has assigned tasks and cannot be deleted");
+        }
     }
 }

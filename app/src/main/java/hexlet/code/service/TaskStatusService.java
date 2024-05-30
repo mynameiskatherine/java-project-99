@@ -49,6 +49,10 @@ public class TaskStatusService {
     public void delete(Long id) {
         TaskStatus taskStatus = taskStatusRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id %d not found".formatted(id)));
-        taskStatusRepository.deleteById(id);
+        if (taskStatus.getTasks().isEmpty()) {
+            taskStatusRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Task status is used in tasks and cannot be deleted");
+        }
     }
 }

@@ -38,22 +38,29 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String...args) throws Exception {
-        User admin = new User();
-        admin.setEmail(adminEmail);
-        admin.setPassword(passwordEncoder.encode(adminPassword));
-        admin.setCreatedAt(LocalDateTime.now());
+        String hashPassword = passwordEncoder.encode(adminPassword);
         if (!userRepository.existsByEmail(adminEmail)) {
+            User admin = new User();
+            admin.setEmail(adminEmail);
+            admin.setPassword(passwordEncoder.encode(adminPassword));
+            admin.setCreatedAt(LocalDateTime.now());
             userRepository.save(admin);
+        } else {
+            User updatedAdmin = userRepository.findByEmail(adminEmail).get();
+            if (!(updatedAdmin.getPassword().equals(hashPassword))) {
+                updatedAdmin.setPassword(passwordEncoder.encode(adminPassword));
+                userRepository.save(updatedAdmin);
+            }
         }
 
         taskStatuses.stream()
                 .map(ts -> {
                     TaskStatus taskStatus = new TaskStatus();
                     taskStatus.setSlug(ts);
-                    String taskName = Arrays.stream(ts.split("_"))
+                    String taskStatusName = Arrays.stream(ts.split("_"))
                             .map(w -> StringUtils.capitalize(w))
                             .collect(Collectors.joining());
-                    taskStatus.setName(taskName);
+                    taskStatus.setName(taskStatusName);
                     return taskStatus;
                 })
                 .forEach(ts -> {
