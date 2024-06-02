@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -28,7 +29,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -52,7 +56,6 @@ public class User implements BaseEntity, UserDetails {
     @Email
     @NotBlank
     @Column(unique = true)
-    @EqualsAndHashCode.Include
     private String email;
 
     @NotNull
@@ -67,17 +70,16 @@ public class User implements BaseEntity, UserDetails {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<Task> tasks = new ArrayList<>();
 
     public void addTask(Task task) {
         tasks.add(task);
-        task.setUser(this);
     }
 
     public void removeTask(Task task) {
         tasks.remove(task);
-        task.setUser(null);
     }
 
     @Override

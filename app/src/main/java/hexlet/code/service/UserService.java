@@ -3,6 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
+import hexlet.code.exception.ResourceIsInUseException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
@@ -64,7 +65,7 @@ public class UserService {
         if (user.getTasks().isEmpty()) {
             userRepository.deleteById(id);
         } else {
-            throw new RuntimeException("User has assigned tasks and cannot be deleted");
+            throw new ResourceIsInUseException("User has assigned tasks and cannot be deleted");
         }
     }
 }

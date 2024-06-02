@@ -31,6 +31,14 @@ task-statuses: >
     to_publish,
     published
 
+labels: >
+  bug,
+  feature
+
 rsa:
   private-key: classpath:certs/private.pem
   public-key: classpath:certs/public.pem
+
+springdoc:
+  swagger-ui:
+    path: "/swagger-ui.html"

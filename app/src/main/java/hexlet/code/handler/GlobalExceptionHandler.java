@@ -1,5 +1,6 @@
 package hexlet.code.handler;
 
+import hexlet.code.exception.ResourceIsInUseException;
 import hexlet.code.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,4 +15,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
+
+    @ExceptionHandler(ResourceIsInUseException.class)
+    public ResponseEntity<String> handleResourceIsUsedException(ResourceIsInUseException exception) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(exception.getMessage());
+    }
+
 }

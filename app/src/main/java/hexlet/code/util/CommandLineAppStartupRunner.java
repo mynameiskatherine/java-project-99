@@ -1,7 +1,9 @@
 package hexlet.code.util;
 
+import hexlet.code.model.Label;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +27,9 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     private TaskStatusRepository taskStatusRepository;
 
     @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Value("${user.email}")
@@ -35,6 +40,9 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     @Value("${task-statuses}")
     private List<String> taskStatuses;
+
+    @Value("${labels}")
+    private List<String> labels;
 
     @Override
     public void run(String...args) throws Exception {
@@ -66,6 +74,15 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
                 .forEach(ts -> {
                     if (!taskStatusRepository.existsBySlug(ts.getSlug())) {
                         taskStatusRepository.save(ts);
+                    }
+                });
+
+        labels.stream()
+                .forEach(l -> {
+                    Label label = new Label();
+                    label.setName(l);
+                    if (!labelRepository.existsByName(l)) {
+                        labelRepository.save(label);
                     }
                 });
     }

@@ -13,7 +13,7 @@ import org.mapstruct.ReportingPolicy;
 import java.lang.annotation.Target;
 
 @Mapper (
-        uses = {JsonNullableMapper.class, ReferenceMapper.class},
+        uses = {JsonNullableMapper.class, ReferenceMapper.class, CustomMapper.class},
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.IGNORE

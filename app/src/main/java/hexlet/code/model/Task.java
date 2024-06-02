@@ -1,7 +1,6 @@
 package hexlet.code.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -10,8 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +24,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "tasks")
@@ -40,7 +44,6 @@ public class Task implements BaseEntity {
 
     @NotBlank
     @Size(min = 1)
-    @EqualsAndHashCode.Include
     private String name;
 
     private Long index;
@@ -49,14 +52,32 @@ public class Task implements BaseEntity {
     private String description;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @EqualsAndHashCode.Include
+    @ManyToOne(fetch = FetchType.LAZY)
     private TaskStatus taskStatus;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne//(fetch = FetchType.LAZY)
     private User user;
+
+    @ManyToMany
+    @ToString.Exclude
+    @JoinTable(
+            name = "tasks_labels",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "label_id")
+    )
+    private List<Label> labels = new ArrayList<>();
 
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
+
+    public void addLabel(Label label) {
+        labels.add(label);
+        label.addTask(this);
+    }
+
+    public void removeLabel(Label label) {
+        labels.remove(label);
+        label.removeTask(this);
+    }
 }

@@ -1,8 +1,11 @@
 package hexlet.code.mapper;
 
+import hexlet.code.dto.LabelCreateUpdateDTO;
+import hexlet.code.dto.LabelDTO;
 import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
+import hexlet.code.model.Label;
 import hexlet.code.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -16,8 +19,8 @@ import org.mapstruct.ReportingPolicy;
         componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
-public abstract class UserMapper {
-    public abstract UserDTO map(User user);
-    public abstract User create(UserCreateDTO userCreateDTO);
-    public abstract void update(UserUpdateDTO userUpdateDTO, @MappingTarget User model);
+public abstract class LabelMapper {
+    public abstract LabelDTO map(Label label);
+    public abstract Label create(LabelCreateUpdateDTO labelCreateUpdateDTO);
+    public abstract void update(LabelCreateUpdateDTO labelCreateUpdateDTO, @MappingTarget Label model);
 }

@@ -8,8 +8,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
@@ -25,34 +24,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Entity
-@Table(name = "task_statuses")
-@EntityListeners(AuditingEntityListener.class)
+@Entity(name = "labels")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode
-@ToString
-public class TaskStatus implements BaseEntity {
+public class Label implements BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
     @Column(unique = true)
-    @Size(min = 1)
+    @Size(min = 3, max = 3000)
+    @NotBlank
     private String name;
-
-    @NotBlank
-    @Size(min = 1)
-    @Column(unique = true)
-    private String slug;
 
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(mappedBy = "labels")
     @ToString.Exclude
     private List<Task> tasks = new ArrayList<>();
 

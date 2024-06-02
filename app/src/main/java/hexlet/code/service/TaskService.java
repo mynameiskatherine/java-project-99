@@ -6,9 +6,11 @@ import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.mapper.JsonNullableMapper;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TaskService {
@@ -27,6 +30,9 @@ public class TaskService {
 
     @Autowired
     private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
 
     @Autowired
     private JsonNullableMapper jsonNullableMapper;
@@ -50,65 +56,63 @@ public class TaskService {
         taskRepository.save(task);
         TaskStatus taskStatus = task.getTaskStatus();
         taskStatus.addTask(task);
-        taskStatusRepository.save(taskStatus);
         User user = task.getUser();
         if (user != null) {
-            user = userRepository.findById(user.getId()).get();
             user.addTask(task);
-            userRepository.save(user);
+        }
+        List<Label> labels = task.getLabels();
+        if (!labels.isEmpty()) {
+            labels.stream()
+                    .forEach(l -> {
+                        l.addTask(task);
+                    });
         }
         return taskMapper.map(task);
     }
-
-//    public TaskDTO create(TaskCreateDTO taskCreateDTO) {
-//        Task task = taskMapper.create(taskCreateDTO);
-//        System.out.println(task.toString());
-//        TaskStatus taskStatus = task.getTaskStatus();
-//        System.out.println(taskStatus.toString());
-//        User user = task.getUser();
-//        System.out.println(user.toString());
-//        taskRepository.save(task);
-//        taskStatus.addTask(task);
-//        if (user != null) {
-//            user = userRepository.findById(user.getId()).get();
-//            user.addTask(task);
-//            userRepository.save(user);
-//        }
-//        return taskMapper.map(task);
-//    }
-
 
     public TaskDTO update(Long id, TaskUpdateDTO taskUpdateDTO) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id %d not found".formatted(id)));
         final User oldUser = task.getUser();
         final TaskStatus oldTaskStatus = task.getTaskStatus();
-
-        if (jsonNullableMapper.isPresent(taskUpdateDTO.getAssigneeId())
-                && (taskUpdateDTO.getAssigneeId().get() != oldUser.getId())) {
-            oldUser.removeTask(task);
-            userRepository.save(oldUser);
-        }
-        if (jsonNullableMapper.isPresent(taskUpdateDTO.getStatus()) &&
-                !(taskUpdateDTO.getStatus().get().equals(oldTaskStatus.getSlug()))) {
-            oldTaskStatus.removeTask(task);
-            taskStatusRepository.save(oldTaskStatus);
-        }
+        final List<Label> oldLabels = task.getLabels();
 
         taskMapper.update(taskUpdateDTO, task);
 
-        if (!task.getUser().equals(oldUser)) {
-            User newUser = task.getUser();
-            newUser.addTask(task);
-            userRepository.save(newUser);
-        }
-        if (!task.getTaskStatus().equals(oldTaskStatus)) {
-            TaskStatus newTaskStatus = task.getTaskStatus();
-            newTaskStatus.addTask(task);
-            taskStatusRepository.save(newTaskStatus);
-        }
+        final User newUser = task.getUser();
+        final TaskStatus newTaskStatus = task.getTaskStatus();
+        final List<Label> newLabels = task.getLabels();
 
         taskRepository.save(task);
+
+        if (!Objects.equals(newUser, oldUser)) {
+            if (oldUser != null) {
+                oldUser.removeTask(task);
+            }
+            if (newUser != null) {
+                newUser.addTask(task);
+            }
+        }
+        if (!Objects.equals(newTaskStatus, oldTaskStatus)) {
+            oldTaskStatus.removeTask(task);
+            newTaskStatus.addTask(task);
+        }
+        if (newLabels.retainAll(oldLabels)) {
+            if (!oldLabels.isEmpty()) {
+                oldLabels.stream()
+                        .forEach(l -> {
+                            l.removeTask(task);
+                        });
+            }
+            if (!newLabels.isEmpty()) {
+                newLabels.stream()
+                        .forEach(l -> {
+                            l.addTask(task);
+                        });
+            }
+        }
+
+
         return taskMapper.map(task);
     }
 
