@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,5 +25,5 @@ public class TaskCreateDTO {
     private String content;
     @NotNull
     private String status;
-    private List<Long> taskLabelIds;
+    private List<Long> taskLabelIds = new ArrayList<>();
 }

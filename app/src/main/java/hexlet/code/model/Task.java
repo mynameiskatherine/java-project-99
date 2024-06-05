@@ -55,7 +55,7 @@ public class Task implements BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private TaskStatus taskStatus;
 
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @ManyToMany

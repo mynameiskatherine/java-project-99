@@ -2,6 +2,7 @@ package hexlet.code.mapper;
 
 import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskDTO;
+import hexlet.code.dto.TaskFilterSearchParameters;
 import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.model.Task;
 import org.mapstruct.InheritConfiguration;

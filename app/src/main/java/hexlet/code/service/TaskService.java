@@ -14,6 +14,8 @@ import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.dto.TaskFilterSearchParameters;
+import hexlet.code.service.filter.TaskFilterSearchParametersSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,9 +42,11 @@ public class TaskService {
     @Autowired
     private TaskMapper taskMapper;
 
-    public List<TaskDTO> getAll() {
-        List<TaskDTO> taskList = taskRepository.findAll().stream().map(taskMapper::map).toList();
-        return taskList;
+    public List<TaskDTO> getAll(TaskFilterSearchParameters params) {
+        TaskFilterSearchParametersSpecification specification =
+                new TaskFilterSearchParametersSpecification(params);
+
+        return taskRepository.findAll(specification).stream().map(taskMapper::map).toList();
     }
 
     public TaskDTO findById(Long id) {
@@ -61,7 +65,7 @@ public class TaskService {
             user.addTask(task);
         }
         List<Label> labels = task.getLabels();
-        if (!labels.isEmpty()) {
+        if (labels != null || !labels.isEmpty()) {
             labels.stream()
                     .forEach(l -> {
                         l.addTask(task);

@@ -4,6 +4,7 @@ import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskDTO;
 import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.service.TaskService;
+import hexlet.code.dto.TaskFilterSearchParameters;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,8 +29,16 @@ public class TasksController {
     private TaskService taskService;
 
     @GetMapping("")
-    public ResponseEntity<List<TaskDTO>> index() {
-        List<TaskDTO> tasks = taskService.getAll();
+    public ResponseEntity<List<TaskDTO>> index(@RequestParam(required = false) String titleCont,
+                                               @RequestParam(required = false) Long assigneeId,
+                                               @RequestParam(required = false) String status,
+                                               @RequestParam(required = false) Long labelId) {
+        TaskFilterSearchParameters parameters = new TaskFilterSearchParameters(titleCont, assigneeId, status, labelId);
+//        parameters.setTitleCont(titleCont);
+//        parameters.setAssigneeId(assigneeId);
+//        parameters.setStatus(status);
+//        parameters.setLabelId(labelId);
+        List<TaskDTO> tasks = taskService.getAll(parameters);
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(tasks.size()))
                 .body(tasks);
