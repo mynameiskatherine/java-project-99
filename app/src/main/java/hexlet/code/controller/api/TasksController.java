@@ -34,10 +34,6 @@ public class TasksController {
                                                @RequestParam(required = false) String status,
                                                @RequestParam(required = false) Long labelId) {
         TaskFilterSearchParameters parameters = new TaskFilterSearchParameters(titleCont, assigneeId, status, labelId);
-//        parameters.setTitleCont(titleCont);
-//        parameters.setAssigneeId(assigneeId);
-//        parameters.setStatus(status);
-//        parameters.setLabelId(labelId);
         List<TaskDTO> tasks = taskService.getAll(parameters);
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(tasks.size()))

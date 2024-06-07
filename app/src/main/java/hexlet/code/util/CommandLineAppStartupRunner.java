@@ -45,7 +45,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     private List<String> labels;
 
     @Override
-    public void run(String...args) throws Exception {
+    public void run(String...args) {
         String hashPassword = passwordEncoder.encode(adminPassword);
         if (!userRepository.existsByEmail(adminEmail)) {
             User admin = new User();

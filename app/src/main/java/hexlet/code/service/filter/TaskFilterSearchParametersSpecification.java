@@ -7,9 +7,7 @@ import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,21 +30,21 @@ public class TaskFilterSearchParametersSpecification implements Specification<Ta
 
         if (parameters.getAssigneeId() != null) {
             Join<Task, User> tasksUsers = root.join("user");
-            predicates.add(criteriaBuilder.equal(tasksUsers.get("id"),parameters.getAssigneeId()));
+            predicates.add(criteriaBuilder.equal(tasksUsers.get("id"), parameters.getAssigneeId()));
         }
 
         if (parameters.getStatus() != null) {
             Join<Task, TaskStatus> tasksTaskStatuses = root.join("taskStatus");
-            predicates.add(criteriaBuilder.equal(tasksTaskStatuses.get("slug"),parameters.getStatus()));
+            predicates.add(criteriaBuilder.equal(tasksTaskStatuses.get("slug"), parameters.getStatus()));
         }
 
         if (parameters.getLabelId() != null) {
             Join<Task, Label> tasksLabels = root.join("labels");
-            predicates.add(criteriaBuilder.equal(tasksLabels.get("id"),parameters.getLabelId()));
+            predicates.add(criteriaBuilder.equal(tasksLabels.get("id"), parameters.getLabelId()));
         }
 
         if (parameters.getTitleCont() != null) {
-            predicates.add(criteriaBuilder.like(root.<String>get("name"),"%"+parameters.getTitleCont()+"%"));
+            predicates.add(criteriaBuilder.like(root.<String>get("name"), "%" + parameters.getTitleCont() + "%"));
         }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

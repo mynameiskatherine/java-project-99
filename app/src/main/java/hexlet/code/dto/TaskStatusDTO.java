@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +13,12 @@ import java.time.LocalDateTime;
 @Setter
 public class TaskStatusDTO {
     private Long id;
+    @NotBlank
+    @Size(min = 1)
     private String name;
+    @NotBlank
+    @Size(min = 1)
+    @Column(unique = true)
     private String slug;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;

@@ -1,6 +1,8 @@
 package hexlet.code.util;
 
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -17,6 +19,10 @@ public class ModelGenerator {
     private Model<User> userModel;
 
     private Model<Task> taskModel;
+
+    private Model<Label> labelModel;
+
+    private Model<TaskStatus> taskStatusModel;
 
     @Autowired
     private Faker faker;
@@ -40,6 +46,19 @@ public class ModelGenerator {
                 .ignore(Select.field(Task::getUser))
                 .ignore(Select.field(Task::getTaskStatus))
                 .ignore(Select.field(Task::getLabels))
+                .toModel();
+
+        labelModel = Instancio.of(Label.class)
+                .ignore(Select.field(Label::getId))
+                .supply(Select.field(Label::getName), () -> faker.lorem().characters(3, 20))
+                .ignore(Select.field(Label::getTasks))
+                .toModel();
+
+        taskStatusModel = Instancio.of(TaskStatus.class)
+                .ignore(Select.field(TaskStatus::getId))
+                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().characters(1, 20))
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.lorem().characters(1, 20))
+                .ignore(Select.field(TaskStatus::getTasks))
                 .toModel();
 
     }

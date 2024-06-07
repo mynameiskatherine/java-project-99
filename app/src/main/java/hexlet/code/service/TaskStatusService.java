@@ -23,7 +23,9 @@ public class TaskStatusService {
     private TaskStatusMapper taskStatusMapper;
 
     public List<TaskStatusDTO> getAll() {
-        List<TaskStatusDTO> taskStatusList = taskStatusRepository.findAll().stream().map(taskStatusMapper::map).toList();
+        List<TaskStatusDTO> taskStatusList = taskStatusRepository.findAll().stream()
+                .map(taskStatusMapper::map)
+                .toList();
         return taskStatusList;
     }
 

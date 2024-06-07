@@ -102,7 +102,7 @@ public class TasksControllerTest {
         testTask.setTaskStatus(testTaskStatus);
         testTask.addLabel(testLabel);
 
-        token = jwt().jwt(builder -> builder.subject("test@test.com"));
+        token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
     }
 
     @Test

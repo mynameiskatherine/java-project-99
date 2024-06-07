@@ -2,11 +2,7 @@ package hexlet.code.mapper;
 
 import hexlet.code.dto.LabelCreateUpdateDTO;
 import hexlet.code.dto.LabelDTO;
-import hexlet.code.dto.UserCreateDTO;
-import hexlet.code.dto.UserDTO;
-import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.model.Label;
-import hexlet.code.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;

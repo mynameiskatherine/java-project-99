@@ -21,9 +21,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "task_statuses")
@@ -44,8 +42,8 @@ public class TaskStatus implements BaseEntity {
     private String name;
 
     @NotBlank
-    @Size(min = 1)
     @Column(unique = true)
+    @Size(min = 1)
     private String slug;
 
     @CreatedDate
