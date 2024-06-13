@@ -28,7 +28,6 @@ jobs:
       with:
           gradle-version: 8.5
           arguments: build
-          build-root-directory: app
     - name: Run test
       run: make test
     - name: Publish code coverage
