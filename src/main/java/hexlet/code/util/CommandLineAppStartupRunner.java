@@ -13,10 +13,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,8 +29,11 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("#{{${users}}}")
-    private Map<String, Map<String, String>> users;
+    @Value("${user.email}")
+    private String userEmail;
+
+    @Value("${user.password}")
+    private String userPassword;
 
     @Value("${task-statuses}")
     private List<String> taskStatuses;
@@ -43,24 +44,8 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     @Override
     public void run(String...args) {
 
-        users.keySet().stream()
-                .forEach(u -> {
-                    String email = users.get(u).get("email");
-                    String password = users.get(u).get("password");
-                    if (!userRepository.existsByEmail(email)) {
-                        User user = new User();
-                        user.setEmail(email);
-                        user.setPassword(passwordEncoder.encode(password));
-                        user.setCreatedAt(LocalDateTime.now());
-                        userRepository.save(user);
-                    } else {
-                        User updatedUser = userRepository.findByEmail(email).get();
-                        if (!(updatedUser.getPassword().equals(passwordEncoder.encode(password)))) {
-                            updatedUser.setPassword(passwordEncoder.encode(password));
-                            userRepository.save(updatedUser);
-                        }
-                    }
-                });
+        User user = new User(userEmail, passwordEncoder.encode(userPassword));
+        userRepository.save(user);
 
         taskStatuses.stream()
                 .map(ts -> {
