@@ -1,0 +1,14 @@
+---
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:project
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      settings:
+        trace: false
+        web-allow-others: false

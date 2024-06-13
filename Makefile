@@ -1,44 +1,45 @@
 setup:
-	make -C app setup
+	npm install
+	./gradlew wrapper --gradle-version 8.7
+	./gradlew build
 
 frontend:
-	make -C app frontend
+	make -C frontend start
 
 backend:
-	make -C app backend
+	./gradlew bootRun --args='--spring.profiles.active=development'
 
 clean:
-	make -C app clean
+	./gradlew clean
 
 build:
-	make -C app build
+	./gradlew clean build
 
 dev:
-	make -C app dev
+	heroku local
 
 reload-classes:
-	make -C app reload-classes
+	./gradlew -t classes
 
 start-prod:
-	make -C app start-prod
+	./gradlew bootRun --args='--spring.profiles.active=production'
 
 install:
-	make -C app install
+	./gradlew installDist
 
 lint:
-	make -C app lint
+	./gradlew checkstyleMain checkstyleTest
 
 test:
-	make -C app test
+	./gradlew test
 
 report:
-	make -C app report
+	./gradlew jacocoTestReport
 
 update-js-deps:
-	make -C app update-js-deps
+	npx ncu -u
 
 check-java-deps:
-	make -C app check-java-deps
+	./gradlew dependencyUpdates -Drevision=release
 
 .PHONY: build frontend
-
