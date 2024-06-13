@@ -29,8 +29,6 @@ jobs:
           gradle-version: 8.5
           arguments: build
           build-root-directory: app
-    #- name: Run linter
-     # run: make lint
     - name: Run test
       run: make test
     - name: Publish code coverage
@@ -41,3 +39,12 @@ jobs:
       with:
         coverageCommand: make report
         coverageLocations: ${{github.workspace}}/app/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
+    - name: Create Sentry release
+      uses: getsentry/action-release@v1
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_ORG: "kate-dx"
+        SENTRY_PROJECT: "java-project-99"
+    # SENTRY_URL: https://sentry.io/
+      with:
+        environment: production
