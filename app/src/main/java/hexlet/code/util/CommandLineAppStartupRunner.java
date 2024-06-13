@@ -16,27 +16,23 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
 public class CommandLineAppStartupRunner implements CommandLineRunner {
+
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private TaskStatusRepository taskStatusRepository;
-
     @Autowired
     private LabelRepository labelRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${user.email}")
-    private String adminEmail;
-
-    @Value("${user.password}")
-    private String adminPassword;
+    @Value("#{{${users}}}")
+    private Map<String, Map<String, String>> users;
 
     @Value("${task-statuses}")
     private List<String> taskStatuses;
@@ -46,20 +42,25 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String...args) {
-        String hashPassword = passwordEncoder.encode(adminPassword);
-        if (!userRepository.existsByEmail(adminEmail)) {
-            User admin = new User();
-            admin.setEmail(adminEmail);
-            admin.setPassword(passwordEncoder.encode(adminPassword));
-            admin.setCreatedAt(LocalDateTime.now());
-            userRepository.save(admin);
-        } else {
-            User updatedAdmin = userRepository.findByEmail(adminEmail).get();
-            if (!(updatedAdmin.getPassword().equals(hashPassword))) {
-                updatedAdmin.setPassword(passwordEncoder.encode(adminPassword));
-                userRepository.save(updatedAdmin);
-            }
-        }
+
+        users.keySet().stream()
+                .forEach(u -> {
+                    String email = users.get(u).get("email");
+                    String password = users.get(u).get("password");
+                    if (!userRepository.existsByEmail(email)) {
+                        User user = new User();
+                        user.setEmail(email);
+                        user.setPassword(passwordEncoder.encode(password));
+                        user.setCreatedAt(LocalDateTime.now());
+                        userRepository.save(user);
+                    } else {
+                        User updatedUser = userRepository.findByEmail(email).get();
+                        if (!(updatedUser.getPassword().equals(passwordEncoder.encode(password)))) {
+                            updatedUser.setPassword(passwordEncoder.encode(password));
+                            userRepository.save(updatedUser);
+                        }
+                    }
+                });
 
         taskStatuses.stream()
                 .map(ts -> {

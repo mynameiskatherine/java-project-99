@@ -2,7 +2,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-	java
 	checkstyle
 	application
 	jacoco
@@ -83,14 +82,25 @@ tasks.jacocoTestReport {
 	}
 }
 
-//sentry {
-//	// Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
-//	// This enables source context, allowing you to see your source
-//	// code as part of your stack traces in Sentry.
-//	includeSourceContext = true
-//
-//	org = "kate-dx"
-//	projectName = "java-project-99"
-//	authToken = System.getenv("SENTRY_AUTH_TOKEN")
-//}
+sentry {
+	telemetry.set(false)
+	ignoredBuildTypes.set(setOf("debug"))
+	// Enables more detailed log output, e.g. for sentry-cli.
+	//
+	// Default is false.
+	debug.set(true)
+	// Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+	// This enables source context, allowing you to see your source
+	// code as part of your stack traces in Sentry.
+	//
+	// Default is disabled.
+	includeSourceContext.set(true)
+	autoInstallation {
+		enabled.set(true)
+	}
+	org.set("kate-dx")
+	projectName.set("java-project-99")
+	authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
+}
+
 

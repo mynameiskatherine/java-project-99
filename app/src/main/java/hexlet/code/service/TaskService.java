@@ -5,42 +5,29 @@ import hexlet.code.dto.TaskDTO;
 import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
-import hexlet.code.mapper.JsonNullableMapper;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
-import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.dto.TaskFilterSearchParameters;
 import hexlet.code.service.filter.TaskFilterSearchParametersSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@AllArgsConstructor
 public class TaskService {
-    @Autowired
-    private TaskRepository taskRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private TaskStatusRepository taskStatusRepository;
-
-    @Autowired
-    private LabelRepository labelRepository;
-
-    @Autowired
-    private JsonNullableMapper jsonNullableMapper;
-
-    @Autowired
-    private TaskMapper taskMapper;
+    private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
+    private final TaskStatusRepository taskStatusRepository;
+    private final TaskMapper taskMapper;
 
     public List<TaskDTO> getAll(TaskFilterSearchParameters params) {
         TaskFilterSearchParametersSpecification specification =
@@ -115,8 +102,6 @@ public class TaskService {
                         });
             }
         }
-
-
         return taskMapper.map(task);
     }
 

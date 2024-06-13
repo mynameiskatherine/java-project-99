@@ -6,11 +6,13 @@ spring:
     hibernate:
       ddl-auto: update
     generate-ddl: true
+    open-in-view: false
   output:
     ansi:
       enabled: always
   profiles:
-    default: production
+    active: ${ACTIVE_PROFILE}
+    default: development
 
 logging:
   level:
@@ -19,9 +21,17 @@ logging:
       springframework:
         security: DEBUG
 
-user:
-  email: hexlet@example.com
-  password: qwerty
+rsa:
+  private-key: classpath:certs/private.pem
+  public-key: classpath:certs/public.pem
+
+users:
+  '{ "user1":
+    {
+      "email": "hexlet@example.com",
+      "password": "qwerty"
+    }
+  }'
 
 # format: low case, no spaces - use _ instead
 task-statuses: >
@@ -34,10 +44,6 @@ task-statuses: >
 labels: >
   bug,
   feature
-
-rsa:
-  private-key: classpath:certs/private.pem
-  public-key: classpath:certs/public.pem
 
 springdoc:
   swagger-ui:

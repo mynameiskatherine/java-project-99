@@ -10,18 +10,16 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.ArrayList;
 
+@AllArgsConstructor
 public class TaskFilterSearchParametersSpecification implements Specification<Task> {
 
     private final TaskFilterSearchParameters parameters;
-
-    public TaskFilterSearchParametersSpecification(TaskFilterSearchParameters parameters) {
-        this.parameters = parameters;
-    }
 
     @Override
     public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

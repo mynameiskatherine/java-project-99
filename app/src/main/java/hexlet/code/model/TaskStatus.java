@@ -1,10 +1,10 @@
 package hexlet.code.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +28,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public class TaskStatus implements BaseEntity {
     @Id
@@ -44,13 +44,14 @@ public class TaskStatus implements BaseEntity {
     @NotBlank
     @Column(unique = true)
     @Size(min = 1)
+    @EqualsAndHashCode.Include
     private String slug;
 
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "taskStatus", fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<Task> tasks = new ArrayList<>();
 

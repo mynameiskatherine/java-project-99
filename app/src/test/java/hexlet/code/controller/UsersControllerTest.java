@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -119,7 +118,7 @@ public class UsersControllerTest {
     }
 
     @Test
-    public void testUpdate() throws Exception {
+    public void testUpdateOtherUser() throws Exception {
         userRepository.save(testUser);
 
         testUser.setEmail("newemail@new.com");
@@ -128,42 +127,15 @@ public class UsersControllerTest {
         mockMvc.perform(put("/api/users/{id}", testUser.getId()).with(token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testUser)))
-                .andExpect(status().isOk());
-
-        User user = userRepository.findById(testUser.getId()).get();
-
-        assertThat(user.getFirstName()).isEqualTo(testUser.getFirstName());
-        assertThat(user.getLastName()).isEqualTo(testUser.getLastName());
-        assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
-        assertThat(user.getPassword()).isNotEqualTo(testUser.getPassword());
+                .andExpect(status().isForbidden());
     }
 
     @Test
-    public void testPartialUpdate() throws Exception {
-        userRepository.save(testUser);
-
-        HashMap<String, String> userUpdate = new HashMap<>();
-        userUpdate.put("email", "newemail@test.com");
-
-        mockMvc.perform(put("/api/users/{id}", testUser.getId()).with(token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userUpdate)))
-                .andExpect(status().isOk());
-
-        User user = userRepository.findById(testUser.getId()).get();
-
-        assertThat(user.getLastName()).isEqualTo(testUser.getLastName());
-        assertThat(user.getEmail()).isEqualTo(userUpdate.get("email"));
-    }
-
-    @Test
-    public void testDelete() throws Exception {
+    public void testDeleteOtherUser() throws Exception {
         userRepository.save(testUser);
 
         mockMvc.perform(delete("/api/users/{id}", testUser.getId()).with(token))
-                .andExpect(status().isNoContent());
-
-        assertThat(userRepository.existsById(testUser.getId())).isEqualTo(false);
+                .andExpect(status().isForbidden());
     }
 
     @Test

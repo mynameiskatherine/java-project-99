@@ -16,7 +16,6 @@ import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
-import jakarta.transaction.Transactional;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 @ActiveProfiles(value = "development")
 public class TasksControllerTest {
 
@@ -91,7 +89,7 @@ public class TasksControllerTest {
                 .build();
 
         //following data is taken from application.yml
-        testUser = userRepository.findByEmail("test@test.com").get();
+        testUser = userRepository.findByEmail("hexlet@example.com").get();
         testTaskStatus = taskStatusRepository.findBySlug("draft").get();
         testTaskStatus2 = taskStatusRepository.findBySlug("published").get();
         testLabel = labelRepository.findByName("bug").get();

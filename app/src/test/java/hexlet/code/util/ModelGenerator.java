@@ -50,14 +50,14 @@ public class ModelGenerator {
 
         labelModel = Instancio.of(Label.class)
                 .ignore(Select.field(Label::getId))
-                .supply(Select.field(Label::getName), () -> faker.lorem().characters(3, 20))
+                .supply(Select.field(Label::getName), () -> "testLabel" + faker.lorem().characters(3, 20))
                 .ignore(Select.field(Label::getTasks))
                 .toModel();
 
         taskStatusModel = Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
-                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().characters(1, 20))
-                .supply(Select.field(TaskStatus::getSlug), () -> faker.lorem().characters(1, 20))
+                .supply(Select.field(TaskStatus::getName), () -> "TestTaskStatus" + faker.lorem().characters(10, 20))
+                .supply(Select.field(TaskStatus::getSlug), () -> "test_task_status_" + faker.lorem().characters(10, 20))
                 .ignore(Select.field(TaskStatus::getTasks))
                 .toModel();
 

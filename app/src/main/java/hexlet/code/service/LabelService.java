@@ -7,19 +7,18 @@ import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class LabelService {
 
-    @Autowired
-    private LabelRepository labelRepository;
-
-    @Autowired
-    private LabelMapper labelMapper;
+    private final LabelRepository labelRepository;
+    private final LabelMapper labelMapper;
 
     public List<LabelDTO> getAll() {
         List<LabelDTO> labelList = labelRepository.findAll().stream().map(labelMapper::map).toList();
@@ -49,10 +48,11 @@ public class LabelService {
     public void delete(Long id) {
         Label label = labelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Label with id %d not found".formatted(id)));
-        if (label.getTasks().isEmpty()) {
+        try {
             labelRepository.deleteById(id);
-        } else {
-            throw new ResourceIsInUseException("Label is used in tasks and cannot be deleted");
+        } catch (Exception e) {
+            throw new ResourceIsInUseException("Label with id %d cannot be deleted ".formatted(id)
+                    + "due to integrity constraint violation" + Arrays.toString(e.getStackTrace()));
         }
     }
 }

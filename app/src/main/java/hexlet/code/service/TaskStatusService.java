@@ -3,24 +3,21 @@ package hexlet.code.service;
 import hexlet.code.dto.TaskStatusCreateDTO;
 import hexlet.code.dto.TaskStatusDTO;
 import hexlet.code.dto.TaskStatusUpdateDTO;
-import hexlet.code.exception.ResourceIsInUseException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class TaskStatusService {
 
-    @Autowired
-    private TaskStatusRepository taskStatusRepository;
-
-    @Autowired
-    private TaskStatusMapper taskStatusMapper;
+    private final TaskStatusRepository taskStatusRepository;
+    private final TaskStatusMapper taskStatusMapper;
 
     public List<TaskStatusDTO> getAll() {
         List<TaskStatusDTO> taskStatusList = taskStatusRepository.findAll().stream()
@@ -52,10 +49,6 @@ public class TaskStatusService {
     public void delete(Long id) {
         TaskStatus taskStatus = taskStatusRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task status with id %d not found".formatted(id)));
-        if (taskStatus.getTasks().isEmpty()) {
-            taskStatusRepository.deleteById(id);
-        } else {
-            throw new ResourceIsInUseException("Task status is used in tasks and cannot be deleted");
-        }
+        taskStatusRepository.deleteById(id);
     }
 }

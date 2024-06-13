@@ -1,10 +1,10 @@
 package hexlet.code.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -35,8 +36,9 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
+@NoArgsConstructor
 public class User implements BaseEntity, UserDetails {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -50,6 +52,7 @@ public class User implements BaseEntity, UserDetails {
     @Email
     @NotBlank
     @Column(unique = true)
+    @EqualsAndHashCode.Include
     private String email;
 
     @NotNull
@@ -64,7 +67,7 @@ public class User implements BaseEntity, UserDetails {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<Task> tasks = new ArrayList<>();
 
@@ -74,6 +77,11 @@ public class User implements BaseEntity, UserDetails {
 
     public void removeTask(Task task) {
         tasks.remove(task);
+    }
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
     @Override

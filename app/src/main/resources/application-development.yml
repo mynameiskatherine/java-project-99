@@ -12,7 +12,3 @@ spring:
       settings:
         trace: false
         web-allow-others: false
-
-user:
-  email: test@test.com
-  password: test
