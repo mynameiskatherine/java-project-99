@@ -1,4 +1,11 @@
-.DEFAULT_GOAL := build-run
+setup:
+	make -C app setup
+
+frontend:
+	make -C app frontend
+
+backend:
+	make -C app backend
 
 clean:
 	make -C app clean
@@ -6,25 +13,29 @@ clean:
 build:
 	make -C app build
 
+dev:
+	make -C app dev
+
+reload-classes:
+	make -C app reload-classes
+
+start-prod:
+	make -C app start-prod
+
 install:
 	make -C app install
-
-run-dist:
-	make -C run-dist
-
-run:
-	make -C app run
-
-test:
-	make -C app test
-
-report:
-	make -C app report
 
 lint:
 	make -C app lint
 
-build-run: build run
+test:
+	make -C app test
 
-.PHONY: build
-.PHONY: test
+update-js-deps:
+	make -C app update-js-deps
+
+check-java-deps:
+	make -C app check-java-deps
+
+.PHONY: build frontend
+

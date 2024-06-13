@@ -1,28 +1,42 @@
+setup:
+	npm install
+	./gradlew wrapper --gradle-version 8.7
+	./gradlew build
+
+frontend:
+	make -C frontend start
+
+backend:
+	./gradlew bootRun --args='--spring.profiles.active=development'
+
 clean:
 	./gradlew clean
 
 build:
 	./gradlew clean build
-	
+
+dev:
+	heroku local
+
+reload-classes:
+	./gradlew -t classes
+
+start-prod:
+	./gradlew bootRun --args='--spring.profiles.active=production'
+
 install:
 	./gradlew installDist
-	
-run-dist:
-	./build/install/app/bin/app
-
-run:
-	./gradlew bootRun
-
-test:
-	./gradlew test
-
-report:
-	./gradlew jacocoTestReport
 
 lint:
 	./gradlew checkstyleMain checkstyleTest
 
-build-run: build run
+test:
+	./gradlew test
 
-.PHONY: build
-.PHONY: test
+update-js-deps:
+	npx ncu -u
+
+check-java-deps:
+	./gradlew dependencyUpdates -Drevision=release
+
+.PHONY: build frontend
