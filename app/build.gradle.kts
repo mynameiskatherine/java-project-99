@@ -1,3 +1,4 @@
+import io.sentry.android.gradle.sourcecontext.BundleSourcesTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
@@ -80,6 +81,10 @@ tasks.jacocoTestReport {
 	reports {
 		xml.required = true
 	}
+}
+
+tasks.withType(BundleSourcesTask::class.java) {
+	enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
 }
 
 sentry {
