@@ -29,16 +29,16 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("{user.email}")
+    @Value("${user.email}")
     private String userEmail;
 
-    @Value("{user.password}")
+    @Value("${user.password}")
     private String userPassword;
 
-    @Value("{task-statuses}")
+    @Value("${task-statuses}")
     private List<String> taskStatuses;
 
-    @Value("{labels}")
+    @Value("${labels}")
     private List<String> labels;
 
     @Override
