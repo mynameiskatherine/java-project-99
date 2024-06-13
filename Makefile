@@ -31,6 +31,9 @@ lint:
 test:
 	make -C app test
 
+report:
+	make -C app report
+
 update-js-deps:
 	make -C app update-js-deps
 
