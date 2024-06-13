@@ -14,7 +14,7 @@ Task management system (similar to for example http://www.redmine.org/). It allo
 
 You will need login and password to use it. Please contact you administrator to create account for you.
 
-Tab "Tasks" - use it to create, view and filter tasks. This is the main tab.
-Tab "Users" - use it to manage your account or create new one. It is prohibited to change or delete other accounts, system will show your an error in case you try to do this.
-Tab "Labels" - use it to view and manage available labels (or tags) for tasks. It is prohibited to delete statuses which are used in tasks.
-Tab "Task Statuses" - use it to view and manage available task statuses. It is prohibited to delete statuses which are used in tasks.
+Tab "Tasks" - use it to create, edit, view and filter tasks. This is the main tab.\
+Tab "Users" - use it to manage your account or create new one. It is prohibited to change or delete other accounts, system will show your an error in case you try to do this.\
+Tab "Labels" - use it to view and manage available labels (or tags) for tasks and create new ones. It is prohibited to delete statuses which are used in tasks.\
+Tab "Task Statuses" - use it to view and manage available task statuses and create new ones. It is prohibited to delete statuses which are used in tasks.
