@@ -1,6 +1,7 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.AppApplication;
 import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.mapper.LabelMapper;
@@ -25,10 +26,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -47,6 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "development")
+@ContextConfiguration(classes = AppApplication.class)
 public class TasksControllerTest {
 
     @Autowired
@@ -79,7 +81,6 @@ public class TasksControllerTest {
     private TaskStatus testTaskStatus2;
     private User testUser;
     private Label testLabel;
-    private JwtRequestPostProcessor token;
 
     @BeforeEach
     void setUp() {
@@ -99,8 +100,6 @@ public class TasksControllerTest {
         testTask.setUser(testUser);
         testTask.setTaskStatus(testTaskStatus);
         testTask.addLabel(testLabel);
-
-        token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
     }
 
     @Test
@@ -113,7 +112,7 @@ public class TasksControllerTest {
         testLabel.addTask(testTask);
         labelRepository.save(testLabel);
 
-        MvcResult result = mockMvc.perform(get("/api/tasks").with(token))
+        MvcResult result = mockMvc.perform(get("/api/tasks").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -131,7 +130,7 @@ public class TasksControllerTest {
         testLabel.addTask(testTask);
         labelRepository.save(testLabel);
 
-        MvcResult result = mockMvc.perform(get("/api/tasks/{id}", testTask.getId()).with(token))
+        MvcResult result = mockMvc.perform(get("/api/tasks/{id}", testTask.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -149,7 +148,7 @@ public class TasksControllerTest {
         System.out.println(taskDTO.toString());
 
         MvcResult result = mockMvc.perform(post("/api/tasks")
-                .with(token)
+                .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(taskDTO)))
                 .andExpect(status().isCreated())
@@ -177,7 +176,7 @@ public class TasksControllerTest {
         testTask.setName("newName");
         TaskUpdateDTO taskDTO = taskMapper.mapToUpdate(testTask);
 
-        mockMvc.perform(put("/api/tasks/{id}", testTask.getId()).with(token)
+        mockMvc.perform(put("/api/tasks/{id}", testTask.getId()).with(jwt())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
                 .andExpect(status().isOk());
@@ -203,7 +202,7 @@ public class TasksControllerTest {
         taskDTO.setIndex(JsonNullable.of(123L));
         taskDTO.setTitle(JsonNullable.of("new name"));
 
-        mockMvc.perform(put("/api/tasks/{id}", testTask.getId()).with(token)
+        mockMvc.perform(put("/api/tasks/{id}", testTask.getId()).with(jwt())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
                 .andExpect(status().isOk());
@@ -225,7 +224,7 @@ public class TasksControllerTest {
         testLabel.addTask(testTask);
         labelRepository.save(testLabel);
 
-        mockMvc.perform(delete("/api/tasks/{id}", testTask.getId()).with(token))
+        mockMvc.perform(delete("/api/tasks/{id}", testTask.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
 
         assertThat(taskRepository.existsById(testTask.getId())).isEqualTo(false);

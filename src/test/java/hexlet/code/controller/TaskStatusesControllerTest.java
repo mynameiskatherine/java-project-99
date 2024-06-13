@@ -2,6 +2,7 @@ package hexlet.code.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.AppApplication;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
@@ -13,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -37,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "development")
+@ContextConfiguration(classes = AppApplication.class)
 public class TaskStatusesControllerTest {
 
     @Autowired
@@ -53,7 +55,6 @@ public class TaskStatusesControllerTest {
     private ObjectMapper objectMapper;
 
     private TaskStatus testTaskStatus;
-    private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
 
     @BeforeEach
     void setUp() {
@@ -63,15 +64,13 @@ public class TaskStatusesControllerTest {
                 .build();
 
         testTaskStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
-
-        token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
     }
 
     @Test
     public void testIndex() throws Exception {
         taskStatusRepository.save(testTaskStatus);
 
-        MvcResult result = mockMvc.perform(get("/api/task_statuses").with(token))
+        MvcResult result = mockMvc.perform(get("/api/task_statuses").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -83,7 +82,7 @@ public class TaskStatusesControllerTest {
     public void testShow() throws Exception {
         taskStatusRepository.save(testTaskStatus);
 
-        MvcResult result = mockMvc.perform(get("/api/task_statuses/{id}", testTaskStatus.getId()).with(token))
+        MvcResult result = mockMvc.perform(get("/api/task_statuses/{id}", testTaskStatus.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -96,7 +95,7 @@ public class TaskStatusesControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        mockMvc.perform(post("/api/task_statuses").with(token)
+        mockMvc.perform(post("/api/task_statuses").with(jwt())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testTaskStatus)))
                 .andExpect(status().isCreated());
@@ -113,7 +112,7 @@ public class TaskStatusesControllerTest {
 
         testTaskStatus.setName("newName");
 
-        mockMvc.perform(put("/api/task_statuses/{id}", testTaskStatus.getId()).with(token)
+        mockMvc.perform(put("/api/task_statuses/{id}", testTaskStatus.getId()).with(jwt())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testTaskStatus)))
                 .andExpect(status().isOk());
@@ -127,7 +126,7 @@ public class TaskStatusesControllerTest {
     public void testDelete() throws Exception {
         taskStatusRepository.save(testTaskStatus);
 
-        mockMvc.perform(delete("/api/task_statuses/{id}", testTaskStatus.getId()).with(token))
+        mockMvc.perform(delete("/api/task_statuses/{id}", testTaskStatus.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
 
         assertThat(taskStatusRepository.existsById(testTaskStatus.getId())).isEqualTo(false);

@@ -2,6 +2,7 @@ package hexlet.code.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.AppApplication;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
@@ -13,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -37,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "development")
+@ContextConfiguration(classes = AppApplication.class)
 public class LabelsControllerTest {
 
     @Autowired
@@ -53,7 +55,6 @@ public class LabelsControllerTest {
     private ObjectMapper objectMapper;
 
     private Label testLabel;
-    private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
 
     @BeforeEach
     void setUp() {
@@ -63,15 +64,13 @@ public class LabelsControllerTest {
                 .build();
 
         testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
-
-        token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
     }
 
     @Test
     public void testIndex() throws Exception {
         labelRepository.save(testLabel);
 
-        MvcResult result = mockMvc.perform(get("/api/labels").with(token))
+        MvcResult result = mockMvc.perform(get("/api/labels").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -83,7 +82,7 @@ public class LabelsControllerTest {
     public void testShow() throws Exception {
         labelRepository.save(testLabel);
 
-        MvcResult result = mockMvc.perform(get("/api/labels/{id}", testLabel.getId()).with(token))
+        MvcResult result = mockMvc.perform(get("/api/labels/{id}", testLabel.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -95,7 +94,7 @@ public class LabelsControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        mockMvc.perform(post("/api/labels").with(token)
+        mockMvc.perform(post("/api/labels").with(jwt())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testLabel)))
                 .andExpect(status().isCreated());
@@ -111,7 +110,7 @@ public class LabelsControllerTest {
 
         testLabel.setName("newName");
 
-        mockMvc.perform(put("/api/labels/{id}", testLabel.getId()).with(token)
+        mockMvc.perform(put("/api/labels/{id}", testLabel.getId()).with(jwt())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testLabel)))
                 .andExpect(status().isOk());
@@ -125,7 +124,7 @@ public class LabelsControllerTest {
     public void testDelete() throws Exception {
         labelRepository.save(testLabel);
 
-        mockMvc.perform(delete("/api/labels/{id}", testLabel.getId()).with(token))
+        mockMvc.perform(delete("/api/labels/{id}", testLabel.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
 
         assertThat(labelRepository.existsById(testLabel.getId())).isEqualTo(false);
