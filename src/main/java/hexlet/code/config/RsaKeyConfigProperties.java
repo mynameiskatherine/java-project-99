@@ -1,4 +1,4 @@
-package hexlet.code.util;
+package hexlet.code.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.security.interfaces.RSAPublicKey;
 @ConfigurationProperties(prefix = "rsa")
 @Setter
 @Getter
-public class RsaKeyProperties {
+public class RsaKeyConfigProperties {
     private RSAPublicKey publicKey;
     private RSAPrivateKey privateKey;
 }

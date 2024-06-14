@@ -1,6 +1,5 @@
 package hexlet.code.config;
 
-import hexlet.code.util.RsaKeyProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +21,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 public class EncoderDecoderConfig {
 
     @Autowired
-    private RsaKeyProperties rsaKeys;
+    private RsaKeyConfigProperties rsaKeys;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

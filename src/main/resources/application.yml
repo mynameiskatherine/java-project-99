@@ -30,16 +30,9 @@ user:
   password: "qwerty"
 
 # format: low case, no spaces - use _ instead
-task-statuses: >
-    draft,
-    to_review,
-    to_be_fixed,
-    to_publish,
-    published
-
-labels: >
-  bug,
-  feature
+initial:
+  task-statuses: draft, to_review, to_be_fixed, to_publish, published
+  labels: bug, feature
 
 springdoc:
   swagger-ui:
