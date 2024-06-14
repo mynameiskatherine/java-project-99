@@ -1,7 +1,6 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.AppApplication;
 import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.mapper.LabelMapper;
@@ -26,7 +25,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -48,7 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "development")
-@ContextConfiguration(classes = AppApplication.class)
 public class TasksControllerTest {
 
     @Autowired
@@ -100,10 +97,7 @@ public class TasksControllerTest {
         testTask.setUser(testUser);
         testTask.setTaskStatus(testTaskStatus);
         testTask.addLabel(testLabel);
-    }
 
-    @Test
-    public void testIndex() throws Exception {
         taskRepository.save(testTask);
         testTaskStatus.addTask(testTask);
         taskStatusRepository.save(testTaskStatus);
@@ -111,7 +105,10 @@ public class TasksControllerTest {
         userRepository.save(testUser);
         testLabel.addTask(testTask);
         labelRepository.save(testLabel);
+    }
 
+    @Test
+    public void testIndex() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/tasks").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -122,14 +119,6 @@ public class TasksControllerTest {
 
     @Test
     public void testShow() throws Exception {
-        taskRepository.save(testTask);
-        testUser.addTask(testTask);
-        userRepository.save(testUser);
-        testTaskStatus.addTask(testTask);
-        taskStatusRepository.save(testTaskStatus);
-        testLabel.addTask(testTask);
-        labelRepository.save(testLabel);
-
         MvcResult result = mockMvc.perform(get("/api/tasks/{id}", testTask.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -143,9 +132,12 @@ public class TasksControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        System.out.println(testTask.toString());
-        TaskCreateDTO taskDTO = taskMapper.mapToCreate(testTask);
-        System.out.println(taskDTO.toString());
+        Task newTask = Instancio.of(modelGenerator.getTaskModel()).create();
+        newTask.setUser(testUser);
+        newTask.setTaskStatus(testTaskStatus);
+        newTask.addLabel(testLabel);
+
+        TaskCreateDTO taskDTO = taskMapper.mapToCreate(newTask);
 
         MvcResult result = mockMvc.perform(post("/api/tasks")
                 .with(jwt())
@@ -156,23 +148,14 @@ public class TasksControllerTest {
 
         String body = result.getResponse().getContentAsString();
         assertThatJson(body).and(
-                v -> v.node("content").isEqualTo(testTask.getDescription()),
-                v -> v.node("title").isEqualTo(testTask.getName())
+                v -> v.node("content").isEqualTo(newTask.getDescription()),
+                v -> v.node("title").isEqualTo(newTask.getName())
         );
     }
 
     @Test
     public void testUpdate() throws Exception {
-        taskRepository.save(testTask);
-        testUser.addTask(testTask);
-        userRepository.save(testUser);
-        testTaskStatus.addTask(testTask);
-        taskStatusRepository.save(testTaskStatus);
-        testLabel.addTask(testTask);
-        labelRepository.save(testLabel);
-
         testTask.setTaskStatus(testTaskStatus2);
-        testTask.setIndex(123L);
         testTask.setName("newName");
         TaskUpdateDTO taskDTO = taskMapper.mapToUpdate(testTask);
 
@@ -183,23 +166,13 @@ public class TasksControllerTest {
 
         Task task = taskRepository.findById(testTask.getId()).get();
 
-        assertThat(task.getIndex()).isEqualTo(123L);
         assertThat(task.getTaskStatus()).isEqualTo(testTaskStatus2);
         assertThat(task.getName()).isEqualTo("newName");
     }
 
     @Test
     public void testPartialUpdate() throws Exception {
-        taskRepository.save(testTask);
-        testUser.addTask(testTask);
-        userRepository.save(testUser);
-        testTaskStatus.addTask(testTask);
-        taskStatusRepository.save(testTaskStatus);
-        testLabel.addTask(testTask);
-        labelRepository.save(testLabel);
-
         TaskUpdateDTO taskDTO = new TaskUpdateDTO();
-        taskDTO.setIndex(JsonNullable.of(123L));
         taskDTO.setTitle(JsonNullable.of("new name"));
 
         mockMvc.perform(put("/api/tasks/{id}", testTask.getId()).with(jwt())
@@ -209,22 +182,12 @@ public class TasksControllerTest {
 
         Task task = taskRepository.findById(testTask.getId()).get();
 
-        assertThat(task.getIndex()).isEqualTo(123L);
         assertThat(task.getName()).isEqualTo("new name");
         assertThat(task.getDescription()).isEqualTo(testTask.getDescription());
     }
 
     @Test
-    public void testDelete() throws Exception {
-        taskRepository.save(testTask);
-        testUser.addTask(testTask);
-        userRepository.save(testUser);
-        testTaskStatus.addTask(testTask);
-        taskStatusRepository.save(testTaskStatus);
-        testLabel.addTask(testTask);
-        labelRepository.save(testLabel);
-
-        mockMvc.perform(delete("/api/tasks/{id}", testTask.getId()).with(jwt()))
+    public void testDelete() throws Exception {mockMvc.perform(delete("/api/tasks/{id}", testTask.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
 
         assertThat(taskRepository.existsById(testTask.getId())).isEqualTo(false);
@@ -232,14 +195,6 @@ public class TasksControllerTest {
 
     @Test
     public void testIndexWithoutAuth() throws Exception {
-        taskRepository.save(testTask);
-        testUser.addTask(testTask);
-        userRepository.save(testUser);
-        testTaskStatus.addTask(testTask);
-        taskStatusRepository.save(testTaskStatus);
-        testLabel.addTask(testTask);
-        labelRepository.save(testLabel);
-
         ResultActions result = mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isUnauthorized());
     }

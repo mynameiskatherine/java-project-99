@@ -2,7 +2,6 @@ package hexlet.code.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.AppApplication;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
@@ -15,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -38,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "development")
-@ContextConfiguration(classes = AppApplication.class)
 public class LabelsControllerTest {
 
     @Autowired
@@ -64,12 +61,11 @@ public class LabelsControllerTest {
                 .build();
 
         testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
+        labelRepository.save(testLabel);
     }
 
     @Test
     public void testIndex() throws Exception {
-        labelRepository.save(testLabel);
-
         MvcResult result = mockMvc.perform(get("/api/labels").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -80,8 +76,6 @@ public class LabelsControllerTest {
 
     @Test
     public void testShow() throws Exception {
-        labelRepository.save(testLabel);
-
         MvcResult result = mockMvc.perform(get("/api/labels/{id}", testLabel.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -94,20 +88,20 @@ public class LabelsControllerTest {
 
     @Test
     public void testCreate() throws Exception {
+        Label newLabel = Instancio.of(modelGenerator.getLabelModel()).create();
+
         mockMvc.perform(post("/api/labels").with(jwt())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testLabel)))
+                        .content(objectMapper.writeValueAsString(newLabel)))
                 .andExpect(status().isCreated());
 
-        Label label = labelRepository.findByName(testLabel.getName()).get();
+        Label label = labelRepository.findByName(newLabel.getName()).get();
 
         assertThat(label).isNotNull();
     }
 
     @Test
     public void testUpdate() throws Exception {
-        labelRepository.save(testLabel);
-
         testLabel.setName("newName");
 
         mockMvc.perform(put("/api/labels/{id}", testLabel.getId()).with(jwt())
@@ -122,8 +116,6 @@ public class LabelsControllerTest {
 
     @Test
     public void testDelete() throws Exception {
-        labelRepository.save(testLabel);
-
         mockMvc.perform(delete("/api/labels/{id}", testLabel.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
 
@@ -132,16 +124,12 @@ public class LabelsControllerTest {
 
     @Test
     public void testIndexWithoutAuth() throws Exception {
-        labelRepository.save(testLabel);
-
         ResultActions result = mockMvc.perform(get("/api/labels"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void testShowWithoutAuth() throws Exception {
-        labelRepository.save(testLabel);
-
         MockHttpServletRequestBuilder request = get("/api/labels/{id}", testLabel.getId());
         ResultActions result = mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());

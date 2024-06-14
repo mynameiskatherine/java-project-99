@@ -1,8 +1,6 @@
 package hexlet.code.controller;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.AppApplication;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -38,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "development")
-@ContextConfiguration(classes = AppApplication.class)
 public class TaskStatusesControllerTest {
 
     @Autowired
@@ -64,12 +60,11 @@ public class TaskStatusesControllerTest {
                 .build();
 
         testTaskStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
+        taskStatusRepository.save(testTaskStatus);
     }
 
     @Test
     public void testIndex() throws Exception {
-        taskStatusRepository.save(testTaskStatus);
-
         MvcResult result = mockMvc.perform(get("/api/task_statuses").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -80,8 +75,6 @@ public class TaskStatusesControllerTest {
 
     @Test
     public void testShow() throws Exception {
-        taskStatusRepository.save(testTaskStatus);
-
         MvcResult result = mockMvc.perform(get("/api/task_statuses/{id}", testTaskStatus.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -95,21 +88,21 @@ public class TaskStatusesControllerTest {
 
     @Test
     public void testCreate() throws Exception {
+        TaskStatus newTaskStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
+
         mockMvc.perform(post("/api/task_statuses").with(jwt())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testTaskStatus)))
+                        .content(objectMapper.writeValueAsString(newTaskStatus)))
                 .andExpect(status().isCreated());
 
-        TaskStatus taskStatus = taskStatusRepository.findBySlug(testTaskStatus.getSlug()).get();
+        TaskStatus taskStatus = taskStatusRepository.findBySlug(newTaskStatus.getSlug()).get();
 
         assertThat(taskStatus).isNotNull();
-        assertThat(taskStatus.getName()).isEqualTo(testTaskStatus.getName());
+        assertThat(taskStatus.getName()).isEqualTo(newTaskStatus.getName());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        taskStatusRepository.save(testTaskStatus);
-
         testTaskStatus.setName("newName");
 
         mockMvc.perform(put("/api/task_statuses/{id}", testTaskStatus.getId()).with(jwt())
@@ -124,8 +117,6 @@ public class TaskStatusesControllerTest {
 
     @Test
     public void testDelete() throws Exception {
-        taskStatusRepository.save(testTaskStatus);
-
         mockMvc.perform(delete("/api/task_statuses/{id}", testTaskStatus.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
 
@@ -134,16 +125,12 @@ public class TaskStatusesControllerTest {
 
     @Test
     public void testIndexWithoutAuth() throws Exception {
-        taskStatusRepository.save(testTaskStatus);
-
         ResultActions result = mockMvc.perform(get("/api/task_statuses"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void testShowWithoutAuth() throws Exception {
-        taskStatusRepository.save(testTaskStatus);
-
         MockHttpServletRequestBuilder request = get("/api/task_statuses/{id}", testTaskStatus.getId());
         ResultActions result = mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());

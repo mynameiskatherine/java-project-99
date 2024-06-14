@@ -1,7 +1,6 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.AppApplication;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
@@ -15,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -38,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "development")
-@ContextConfiguration(classes = AppApplication.class)
 public class UsersControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -64,14 +61,13 @@ public class UsersControllerTest {
                 .build();
 
         testUser = Instancio.of(modelGenerator.getUserModel()).create();
+        userRepository.save(testUser);
 
         token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
     }
 
     @Test
     public void testIndex() throws Exception {
-        userRepository.save(testUser);
-
         MvcResult result = mockMvc.perform(get("/api/users").with(token))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -82,8 +78,6 @@ public class UsersControllerTest {
 
     @Test
     public void testShow() throws Exception {
-        userRepository.save(testUser);
-
         MvcResult result = mockMvc.perform(get("/api/users/{id}", testUser.getId()).with(token))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -98,32 +92,33 @@ public class UsersControllerTest {
 
     @Test
     public void testCreate() throws Exception {
+        User newUser = Instancio.of(modelGenerator.getUserModel()).create();
+
         mockMvc.perform(post("/api/users").with(token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testUser)))
+                        .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().isCreated());
 
-        User user = userRepository.findByEmail(testUser.getEmail()).get();
+        User user = userRepository.findByEmail(newUser.getEmail()).get();
 
         assertThat(user).isNotNull();
-        assertThat(user.getFirstName()).isEqualTo(testUser.getFirstName());
-        assertThat(user.getLastName()).isEqualTo(testUser.getLastName());
+        assertThat(user.getFirstName()).isEqualTo(newUser.getFirstName());
+        assertThat(user.getLastName()).isEqualTo(newUser.getLastName());
     }
 
     @Test
     public void testCreateWithNotValidPassword() throws Exception {
-        testUser.setPassword("qw");
+        User newUser = Instancio.of(modelGenerator.getUserModel()).create();
+        newUser.setPassword("qw");
 
         mockMvc.perform(post("/api/users").with(token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(testUser)))
+                .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        userRepository.save(testUser);
-
         testUser.setEmail("newemail@new.com");
         testUser.setPassword("newpassword");
 
@@ -135,24 +130,18 @@ public class UsersControllerTest {
 
     @Test
     public void testDelete() throws Exception {
-        userRepository.save(testUser);
-
         mockMvc.perform(delete("/api/users/{id}", testUser.getId()).with(token))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     public void testIndexWithoutAuth() throws Exception {
-        userRepository.save(testUser);
-
         ResultActions result = mockMvc.perform(get("/api/users"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void testShowWithoutAuth() throws Exception {
-        userRepository.save(testUser);
-
         MockHttpServletRequestBuilder request = get("/api/users/{id}", testUser.getId());
         ResultActions result = mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());

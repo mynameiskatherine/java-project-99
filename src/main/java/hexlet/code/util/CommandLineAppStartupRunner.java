@@ -13,6 +13,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,10 +37,10 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     private String userPassword;
 
     @Value("${task-statuses}")
-    private List<String> taskStatuses;
+    private List<String> taskStatuses = new ArrayList<>();
 
     @Value("${labels}")
-    private List<String> labels;
+    private List<String> labels = new ArrayList<>();
 
     @Override
     public void run(String...args) {
