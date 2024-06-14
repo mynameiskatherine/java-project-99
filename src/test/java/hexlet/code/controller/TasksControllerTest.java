@@ -187,7 +187,8 @@ public class TasksControllerTest {
     }
 
     @Test
-    public void testDelete() throws Exception {mockMvc.perform(delete("/api/tasks/{id}", testTask.getId()).with(jwt()))
+    public void testDelete() throws Exception {
+        mockMvc.perform(delete("/api/tasks/{id}", testTask.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
 
         assertThat(taskRepository.existsById(testTask.getId())).isEqualTo(false);
