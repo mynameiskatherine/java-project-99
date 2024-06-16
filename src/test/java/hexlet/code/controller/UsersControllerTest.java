@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -52,6 +53,8 @@ public class UsersControllerTest {
     private ModelGenerator modelGenerator;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private User testUser;
     private JwtRequestPostProcessor token;
