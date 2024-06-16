@@ -109,8 +109,10 @@ public class TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id %d not found".formatted(id)));
         User user = task.getUser();
-        user.removeTask(task);
-        userRepository.save(user);
+        if (user != null) {
+            user.removeTask(task);
+            userRepository.save(user);
+        }
         TaskStatus taskStatus = task.getTaskStatus();
         taskStatus.removeTask(task);
         taskStatusRepository.save(taskStatus);
