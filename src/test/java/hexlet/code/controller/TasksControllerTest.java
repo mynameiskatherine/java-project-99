@@ -16,6 +16,7 @@ import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
+import jakarta.transaction.Transactional;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -108,6 +109,7 @@ public class TasksControllerTest {
     }
 
     @Test
+    @Transactional
     public void testIndex() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/tasks").with(jwt()))
                 .andExpect(status().isOk())
@@ -118,6 +120,7 @@ public class TasksControllerTest {
     }
 
     @Test
+    @Transactional
     public void testShow() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/tasks/{id}", testTask.getId()).with(jwt()))
                 .andExpect(status().isOk())
@@ -131,6 +134,7 @@ public class TasksControllerTest {
     }
 
     @Test
+    @Transactional
     public void testCreate() throws Exception {
         Task newTask = Instancio.of(modelGenerator.getTaskModel()).create();
         newTask.setUser(testUser);
@@ -154,6 +158,7 @@ public class TasksControllerTest {
     }
 
     @Test
+    @Transactional
     public void testUpdate() throws Exception {
         testTask.setTaskStatus(testTaskStatus2);
         testTask.setName("newName");
@@ -171,6 +176,7 @@ public class TasksControllerTest {
     }
 
     @Test
+    @Transactional
     public void testPartialUpdate() throws Exception {
         TaskUpdateDTO taskDTO = new TaskUpdateDTO();
         taskDTO.setTitle(JsonNullable.of("new name"));
@@ -187,6 +193,7 @@ public class TasksControllerTest {
     }
 
     @Test
+    @Transactional
     public void testDelete() throws Exception {
         mockMvc.perform(delete("/api/tasks/{id}", testTask.getId()).with(jwt()))
                 .andExpect(status().isNoContent());
@@ -195,6 +202,7 @@ public class TasksControllerTest {
     }
 
     @Test
+    @Transactional
     public void testIndexWithoutAuth() throws Exception {
         ResultActions result = mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isUnauthorized());

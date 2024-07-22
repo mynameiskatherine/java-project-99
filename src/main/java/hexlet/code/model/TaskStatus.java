@@ -54,7 +54,7 @@ public class TaskStatus implements BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "taskStatus", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "taskStatus", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Task> tasks = new ArrayList<>();
 

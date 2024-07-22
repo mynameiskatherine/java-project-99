@@ -47,7 +47,7 @@ public class Label implements BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
-    @ManyToMany(mappedBy = "labels", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "labels", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Task> tasks = new ArrayList<>();
 

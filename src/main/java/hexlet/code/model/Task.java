@@ -59,7 +59,7 @@ public class Task implements BaseEntity {
     @ManyToOne
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @ToString.Exclude
     @JoinTable(
             name = "tasks_labels",

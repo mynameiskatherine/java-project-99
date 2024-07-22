@@ -1,4 +1,4 @@
-import io.sentry.android.gradle.sourcecontext.BundleSourcesTask
+//import io.sentry.android.gradle.sourcecontext.BundleSourcesTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
@@ -10,7 +10,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.4"
 	id("io.freefair.lombok") version "8.6"
 	id("com.github.ben-manes.versions") version "0.50.0"
-	id("io.sentry.jvm.gradle") version "4.7.1"
+//	id("io.sentry.jvm.gradle") version "4.7.1"
 }
 
 group = "hexlet.code"
@@ -77,35 +77,35 @@ tasks.withType<Test> {
 	finalizedBy(tasks.jacocoTestReport)
 }
 
-tasks.jacocoTestReport {
-	reports {
-		xml.required = true
-	}
-}
-
-tasks.withType(BundleSourcesTask::class.java) {
-	enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
-}
-
-sentry {
-	telemetry.set(false)
-	ignoredBuildTypes.set(setOf("debug"))
-	// Enables more detailed log output, e.g. for sentry-cli.
-	//
-	// Default is false.
-	debug.set(true)
-	// Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
-	// This enables source context, allowing you to see your source
-	// code as part of your stack traces in Sentry.
-	//
-	// Default is disabled.
-	includeSourceContext.set(true)
-	autoInstallation {
-		enabled.set(true)
-	}
-	org.set("kate-dx")
-	projectName.set("java-project-99")
-	authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
-}
+//tasks.jacocoTestReport {
+//	reports {
+//		xml.required = true
+//	}
+//}
+//
+//tasks.withType(BundleSourcesTask::class.java) {
+//	enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
+//}
+//
+//sentry {
+//	telemetry.set(false)
+//	ignoredBuildTypes.set(setOf("debug"))
+//	// Enables more detailed log output, e.g. for sentry-cli.
+//	//
+//	// Default is false.
+//	debug.set(true)
+//	// Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+//	// This enables source context, allowing you to see your source
+//	// code as part of your stack traces in Sentry.
+//	//
+//	// Default is disabled.
+//	includeSourceContext.set(true)
+//	autoInstallation {
+//		enabled.set(true)
+//	}
+//	org.set("kate-dx")
+//	projectName.set("java-project-99")
+//	authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
+//}
 
 

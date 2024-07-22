@@ -30,6 +30,9 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         User user = new User("hexlet@example.com",
                 passwordEncoder.encode("qwerty"));
         userRepository.save(user);
+        User user2 = new User("test@test.com",
+                passwordEncoder.encode("testtest"));
+        userRepository.save(user2);
 
         taskStatusRepository.save(new TaskStatus("draft", "draft"));
         taskStatusRepository.save(new TaskStatus("to_review", "ToReview"));

@@ -68,7 +68,7 @@ public class User implements BaseEntity, UserDetails {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Task> tasks = new ArrayList<>();
 

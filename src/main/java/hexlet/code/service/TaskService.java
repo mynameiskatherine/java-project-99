@@ -14,6 +14,7 @@ import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.dto.TaskFilterSearchParameters;
 import hexlet.code.service.filter.TaskFilterSearchParametersSpecification;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class TaskService {
     private final TaskStatusRepository taskStatusRepository;
     private final TaskMapper taskMapper;
 
+    @Transactional
     public List<TaskDTO> getAll(TaskFilterSearchParameters params) {
         TaskFilterSearchParametersSpecification specification =
                 new TaskFilterSearchParametersSpecification(params);
@@ -36,12 +38,14 @@ public class TaskService {
         return taskRepository.findAll(specification).stream().map(taskMapper::map).toList();
     }
 
+    @Transactional
     public TaskDTO findById(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id %d not found".formatted(id)));
         return taskMapper.map(task);
     }
 
+    @Transactional
     public TaskDTO create(TaskCreateDTO taskCreateDTO) {
         Task task = taskMapper.create(taskCreateDTO);
         taskRepository.save(task);
@@ -61,6 +65,7 @@ public class TaskService {
         return taskMapper.map(task);
     }
 
+    @Transactional
     public TaskDTO update(Long id, TaskUpdateDTO taskUpdateDTO) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id %d not found".formatted(id)));
@@ -105,6 +110,7 @@ public class TaskService {
         return taskMapper.map(task);
     }
 
+    @Transactional
     public void delete(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id %d not found".formatted(id)));
