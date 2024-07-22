@@ -77,12 +77,12 @@ tasks.withType<Test> {
 	finalizedBy(tasks.jacocoTestReport)
 }
 
-//tasks.jacocoTestReport {
-//	reports {
-//		xml.required = true
-//	}
-//}
-//
+tasks.jacocoTestReport {
+	reports {
+		xml.required = true
+	}
+}
+
 //tasks.withType(BundleSourcesTask::class.java) {
 //	enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
 //}
