@@ -29,27 +29,10 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
         User user = new User("hexlet@example.com",
                 passwordEncoder.encode("qwerty"));
-        if (!userRepository.existsByEmail(user.getEmail())) {
-            userRepository.save(user);
-        } else {
-            User existedAdmin = userRepository.findByEmail(user.getEmail()).get();
-            if (!(existedAdmin.getPassword().equals(user.getPassword()))) {
-                existedAdmin.setPassword(user.getPassword());
-                userRepository.save(existedAdmin);
-            }
-        }
-
+        userRepository.save(user);
         User user2 = new User("test@test.com",
                 passwordEncoder.encode("testtest"));
-        if (!userRepository.existsByEmail(user2.getEmail())) {
-            userRepository.save(user2);
-        } else {
-            User existedAdmin = userRepository.findByEmail(user2.getEmail()).get();
-            if (!(existedAdmin.getPassword().equals(user2.getPassword()))) {
-                existedAdmin.setPassword(user2.getPassword());
-                userRepository.save(existedAdmin);
-            }
-        }
+        userRepository.save(user2);
 
         taskStatusRepository.save(new TaskStatus("draft", "draft"));
         taskStatusRepository.save(new TaskStatus("to_review", "ToReview"));
