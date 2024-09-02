@@ -1,0 +1,320 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1724940084791-1
+      author: kate (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: labels_pkey
+                  name: id
+                  startWith: 3
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: name
+                  type: VARCHAR(3000)
+            tableName: labels
+  - changeSet:
+      id: 1724940084791-2
+      author: kate (generated)
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: id
+                  name: id
+                  type: NUMERIC
+              - column:
+                  header: created_at
+                  name: created_at
+                  type: DATE
+              - column:
+                  header: name
+                  name: name
+                  type: STRING
+            commentLineStartsWith: '#'
+            encoding: UTF-8
+            file: db/changelog/data/labels.csv
+            quotchar: '"'
+            separator: ','
+            tableName: labels
+  - changeSet:
+      id: 1724940084791-3
+      author: kate (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: task_statuses_pkey
+                  name: id
+                  startWith: 10
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: slug
+                  type: VARCHAR(255)
+            tableName: task_statuses
+  - changeSet:
+      id: 1724940084791-4
+      author: kate (generated)
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: id
+                  name: id
+                  type: NUMERIC
+              - column:
+                  header: created_at
+                  name: created_at
+                  type: DATE
+              - column:
+                  header: name
+                  name: name
+                  type: STRING
+              - column:
+                  header: slug
+                  name: slug
+                  type: STRING
+            commentLineStartsWith: '#'
+            encoding: UTF-8
+            file: db/changelog/data/task_statuses.csv
+            quotchar: '"'
+            separator: ','
+            tableName: task_statuses
+  - changeSet:
+      id: 1724940084791-5
+      author: kate (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: tasks_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: index
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: task_status_id
+                  type: BIGINT
+              - column:
+                  name: user_id
+                  type: BIGINT
+            tableName: tasks
+  - changeSet:
+      id: 1724940084791-6
+      author: kate (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                  name: id
+                  startWith: 8
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: password
+                  type: VARCHAR(255)
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            tableName: users
+  - changeSet:
+      id: 1724940084791-7
+      author: kate (generated)
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: id
+                  name: id
+                  type: NUMERIC
+              - column:
+                  header: created_at
+                  name: created_at
+                  type: DATE
+              - column:
+                  header: email
+                  name: email
+                  type: STRING
+              - column:
+                  header: first_name
+                  name: first_name
+                  type: skip
+              - column:
+                  header: last_name
+                  name: last_name
+                  type: skip
+              - column:
+                  header: password
+                  name: password
+                  type: STRING
+              - column:
+                  header: updated_at
+                  name: updated_at
+                  type: DATE
+            commentLineStartsWith: '#'
+            encoding: UTF-8
+            file: db/changelog/data/users.csv
+            quotchar: '"'
+            separator: ','
+            tableName: users
+  - changeSet:
+      id: 1724940084791-8
+      author: kate (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: uk_otpirygk7h1hmo02w999f7kmp
+            tableName: labels
+  - changeSet:
+      id: 1724940084791-9
+      author: kate (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: uk_dhogqjhrcydo4g6hpr4yue0u
+            tableName: task_statuses
+  - changeSet:
+      id: 1724940084791-10
+      author: kate (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: slug
+            constraintName: uk_s9havha7265fb7s24h1oe937x
+            tableName: task_statuses
+  - changeSet:
+      id: 1724940084791-11
+      author: kate (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: email
+            constraintName: uk_6dotkott2kjsp8vw4d0m25fb7
+            tableName: users
+  - changeSet:
+      id: 1724940084791-12
+      author: kate (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: task_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: label_id
+                  type: BIGINT
+            tableName: tasks_labels
+  - changeSet:
+      id: 1724940084791-13
+      author: kate (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: label_id
+            baseTableName: tasks_labels
+            constraintName: fk5eg3urx4p1n0hkcqv8x04wibn
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: labels
+            validate: true
+  - changeSet:
+      id: 1724940084791-14
+      author: kate (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: tasks
+            constraintName: fk6s1ob9k4ihi75xbxe2w0ylsdh
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1724940084791-15
+      author: kate (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: task_status_id
+            baseTableName: tasks
+            constraintName: fk7xndk7y2uk29wdu734xyutbqe
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: task_statuses
+            validate: true
+  - changeSet:
+      id: 1724940084791-16
+      author: kate (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: task_id
+            baseTableName: tasks_labels
+            constraintName: fk9qrs86gyw7ctgqiwqvr9jkf0l
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: tasks
+            validate: true

@@ -54,6 +54,8 @@ dependencies {
 
 	runtimeOnly("com.h2database:h2:2.2.224")
 	implementation("org.postgresql:postgresql:42.7.3")
+	implementation("org.liquibase:liquibase-core")
+
 
 	implementation("org.instancio:instancio-junit:3.6.0")
 	implementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")

@@ -1,0 +1,3 @@
+"id","created_at","email","first_name","last_name","password","updated_at"
+"1","2024-08-27T15:02:25.788883","hexlet@example.com","NULL","NULL","$2a$10$kSBA/.xmLqhkY8rzTH9h4.00F1IHrKpIG51aaeYbWtA0BMWgjaOkm","2024-08-29T09:57:49.982185"
+"2","2024-08-27T15:02:25.97007","test@test.com","NULL","NULL","$2a$10$ee7zGJe5MabtdRF0W7tzTuUTTjR1fsUlCb0aisdHMPRBeiT93wp.e","2024-08-29T09:57:50.132524"
