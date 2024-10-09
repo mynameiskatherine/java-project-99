@@ -1,0 +1,94 @@
+
+services:
+
+  app:
+    container_name: app_99_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ACTIVE_PROFILE: production
+      PORT: 8080
+      JDBC_DATABASE_URL: jdbc:postgresql://db:5432/project_99_db
+      JDBC_DATABASE_USER: user1
+      JDBC_DATABASE_PASSWORD: password1
+    ports:
+      - 8080:8080
+    volumes:
+      # Текущая директория пробрасывается в директорию /app внутри контейнера
+      # Путь внутри контейнера (после двоеточия) обязательно должен быть абсолютным
+      - .:/app
+      - /tmp:/tmp
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    container_name: postgres_container
+    image: postgres:latest
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=50"
+      - "-c"
+      - "shared_buffers=1GB"
+      - "-c"
+      - "effective_cache_size=1GB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "temp_file_limit=1GB"
+      - "-c"
+      - "log_min_duration_statement=200ms"
+      - "-c"
+      - "idle_in_transaction_session_timeout=10s"
+      - "-c"
+      - "lock_timeout=1s"
+      - "-c"
+      - "statement_timeout=60s"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=10000"
+      - "-c"
+      - "pg_stat_statements.track=all"
+    environment:
+      POSTGRES_USER: user1
+      POSTGRES_PASSWORD: password1
+      POSTGRES_DB: project_99_db
+    ports:
+      - 5432:5432
+    volumes:
+#      - ./infrastructure/db/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4:7
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - 5050:80
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db
+      - app
+      
+
+volumes:
+  pgdata:
+  pgadmin-data:
+
